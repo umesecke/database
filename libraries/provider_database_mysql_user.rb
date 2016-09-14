@@ -109,7 +109,7 @@ class Chef
             test_sql += " AND Db='#{new_resource.database_name}'" if new_resource.database_name
             test_sql_results = test_client.query test_sql
 
-            incorrect_privs = true if test_sql_results.empty?
+            incorrect_privs = true if test_sql_results.size == 0
             # These should all be 'Y'
             test_sql_results.each do |r|
               desired_privs.each do |p|
@@ -178,7 +178,7 @@ class Chef
           end
 
           # Repair
-          unless privs_to_revoke.empty?
+          unless privs_to_revoke.size == 0
             converge_by "Granting privs for '#{new_resource.username}'@'#{new_resource.host}'" do
               begin
                 revoke_statement = "REVOKE #{privs_to_revoke.join(',')}"
@@ -325,7 +325,7 @@ class Chef
                           "AND authentication_string=PASSWORD('#{new_resource.password}')"
                         end
           end
-          !test_client.query(test_sql).empty?
+          !(test_client.query(test_sql).size == 0)
         end
 
         def update_user_password
@@ -356,7 +356,7 @@ class Chef
         end
 
         def database_has_password_column(client)
-          !client.query('SHOW COLUMNS FROM mysql.user WHERE Field="Password"').empty?
+          !(client.query('SHOW COLUMNS FROM mysql.user WHERE Field="Password"').size == 0)
         end
       end
     end
