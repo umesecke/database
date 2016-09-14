@@ -144,7 +144,7 @@ class Chef
               username: new_resource.connection[:username],
               password: new_resource.connection[:password],
               port: new_resource.connection[:port],
-              flags: new_resource.connection[:flags],
+              flags: new_resource.connection[:flags].nil? ? Mysql2::Client::MULTI_STATEMENTS : new_resource.connection[:flags] | Mysql2::Client::MULTI_STATEMENTS,
               database: new_resource.database_name
             )
         end
